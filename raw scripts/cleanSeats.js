@@ -1,4 +1,4 @@
-// cleanSeats v0.2 10FEB23
+// cleanSeats v0.3 15FEB24
 function cleanSeats(colNumber) {
   var tableElem = window.document.getElementById("tickets");
   var tableBody = tableElem.getElementsByTagName("tbody").item(0);
@@ -25,18 +25,22 @@ function cleanSeats(colNumber) {
         var cleanSeat = seatArray[s].split(":");
         cleanSeat[1] = "Sec: " + cleanSeat[1];
         cleanSeat[2] = " Row: " + cleanSeat[2];
-        var spacer = cleanSeat[3].trim();
-        var singleSeatCheck = spacer.split(",");
-        if (singleSeatCheck[0] === singleSeatCheck[1]) {
-          cleanSeat[3] = singleSeatCheck[0];
-        } else {
-          cleanSeat[3] = cleanSeat[3].replace(/,/g, "-");
+        let spacer;
+        if (cleanSeat[3]) {
+          spacer = cleanSeat[3].trim();
+
+          let singleSeatCheck = spacer.split(",");
+          if (singleSeatCheck[0] === singleSeatCheck[1]) {
+            cleanSeat[3] = singleSeatCheck[0];
+          } else {
+            cleanSeat[3] = cleanSeat[3].replace(/,/g, "-");
+          }
+          cleanSeat[3] = " Seat(s): " + cleanSeat[3];
+          cleanSeat.shift();
+          seatArray[s] = cleanSeat.join(":");
+          showCleanSeats += seatArray[s] + "<br>";
+          thisTdElem.innerHTML = showCleanSeats;
         }
-        cleanSeat[3] = " Seat(s): " + cleanSeat[3];
-        cleanSeat.shift();
-        seatArray[s] = cleanSeat.join(":");
-        showCleanSeats += seatArray[s] + "<br>";
-        thisTdElem.innerHTML = showCleanSeats;
       } // end for
     } // end if
   }
