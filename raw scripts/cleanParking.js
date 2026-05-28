@@ -1,42 +1,45 @@
-// cleanParking v0.1 15FEB24
-function cleanParking(colNumber, pretext) {
-  let tableElem = window.document.getElementById("tickets");
-  let tableBody = tableElem.getElementsByTagName("tbody").item(0);
-  let i;
-  let totalRows = tableBody.rows.length;
-  for (
-    i = 0;
-    i < totalRows;
-    i++ // skip first and last row (hence i=1, and howManyRows-1)
-  ) {
-    let thisTrElem = tableBody.rows[i];
-    // user entry to javascript leading 0
-    let thisTdElem = thisTrElem.cells[colNumber - 1];
-    let thisTextNode = thisTdElem.textContent;
-    let descElem = thisTrElem.cells[0];
-    let descNode = descElem.textContent.toUpperCase();
-    // 3rd check is for PMAPP blank space; 4th Check is for parking in description
-    if (
-      thisTextNode != "undefined" &&
-      thisTextNode != "" &&
-      thisTextNode.replace(/\s/g, "").length &&
-      descNode.indexOf("PARKING") > -1
-    ) {
-      let seatArray = thisTextNode.split(" ");
-      let showCleanSeats = "";
-      for (var s in seatArray) {
-        let cleanSeat = seatArray[s].split(":");
-        let parkSec = cleanSeat[1];
-        if (pretext.toUpperCase() == "GENERAL ADMISSION") {
-          showCleanSeats = pretext;
-          thisTdElem.innerHTML = showCleanSeats;
-        } else if (pretext == "") {
-          thisTdElem.innerHTML = pretext;
-        } else {
-          showCleanSeats = pretext + parkSec;
-          thisTdElem.innerHTML = showCleanSeats;
+// cleanParking v1.0 20FEB25
+// using "General Admission" will include that in seats section. Using "Section: " will include the section in the seating area.
+function cleanParking(colNumber, pretext = "") {
+    let tableElem = document.getElementById("tickets");
+    if (!tableElem) return;
+
+    let tableBody = tableElem.querySelector("tbody");
+    if (!tableBody) return;
+
+    let totalRows = tableBody.rows.length;
+
+    // Skip first and last row
+    for (let i = 1; i < totalRows - 1; i++) {
+        let thisTrElem = tableBody.rows[i];
+        let thisTdElem = thisTrElem.cells[colNumber - 1];
+        if (!thisTdElem) continue;
+
+        let thisTextNode = thisTdElem.textContent.trim();
+        let descElem = thisTrElem.cells[0];
+        let descNode = descElem.textContent.trim().toUpperCase();
+
+        if (thisTextNode.length > 0 && descNode.includes("PARKING")) {
+            let seatArray = thisTextNode.split(" ");
+            let cleanSeats = [];
+
+            for (let seat of seatArray) {
+                let cleanSeat = seat.split(":");
+                let parkSec = cleanSeat[1] || ""; // Avoid undefined issues
+
+                if (pretext.toUpperCase() === "GENERAL ADMISSION") {
+                    cleanSeats = [pretext]; 
+                    break; // No need to process further
+                } else if (pretext === "") {
+                    cleanSeats = [""];
+                    break;
+                } else {
+                    cleanSeats.push(pretext + parkSec);
+                }
+            }
+
+            thisTdElem.innerHTML = cleanSeats.join(" ");
         }
-      } // end for
-    } // end if
-  }
+    }
 }
+
