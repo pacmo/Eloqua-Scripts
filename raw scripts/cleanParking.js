@@ -1,5 +1,7 @@
-// cleanParking v1.0 20FEB25
+
+// cleanParking v1.1 6MAR25
 // using "General Admission" will include that in seats section. Using "Section: " will include the section in the seating area.
+
 function cleanParking(colNumber, pretext = "") {
     let tableElem = document.getElementById("tickets");
     if (!tableElem) return;
@@ -9,37 +11,22 @@ function cleanParking(colNumber, pretext = "") {
 
     let totalRows = tableBody.rows.length;
 
-    // Skip first and last row
-    for (let i = 1; i < totalRows - 1; i++) {
+    // Iterate through all rows
+    for (let i = 0; i < totalRows; i++) {
         let thisTrElem = tableBody.rows[i];
         let thisTdElem = thisTrElem.cells[colNumber - 1];
         if (!thisTdElem) continue;
 
-        let thisTextNode = thisTdElem.textContent.trim();
         let descElem = thisTrElem.cells[0];
         let descNode = descElem.textContent.trim().toUpperCase();
 
-        if (thisTextNode.length > 0 && descNode.includes("PARKING")) {
-            let seatArray = thisTextNode.split(" ");
-            let cleanSeats = [];
-
-            for (let seat of seatArray) {
-                let cleanSeat = seat.split(":");
-                let parkSec = cleanSeat[1] || ""; // Avoid undefined issues
-
-                if (pretext.toUpperCase() === "GENERAL ADMISSION") {
-                    cleanSeats = [pretext]; 
-                    break; // No need to process further
-                } else if (pretext === "") {
-                    cleanSeats = [""];
-                    break;
-                } else {
-                    cleanSeats.push(pretext + parkSec);
-                }
+        // If the description contains "PARKING", update the cell text
+        if (descNode.includes("PARKING")) {
+            if (pretext.toUpperCase() === "GENERAL ADMISSION") {
+                thisTdElem.innerHTML = pretext;
+            } else {
+                thisTdElem.innerHTML = pretext || ""; // Set to pretext or empty if not provided
             }
-
-            thisTdElem.innerHTML = cleanSeats.join(" ");
         }
     }
 }
-
