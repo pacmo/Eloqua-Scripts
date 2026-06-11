@@ -1,4 +1,4 @@
-// convert v 0.1 4JAN2023
+// convert v 0.2 6FEB2023
 // convert entity characters
 function convert(string) {
   var multiple = {
@@ -7,6 +7,7 @@ function convert(string) {
     "&gt;": ">",
     "&quot;": '"',
     "&apos;": "`",
+    "&plus;": "+",
   };
   for (var char in multiple) {
     var before = char;
