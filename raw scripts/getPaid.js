@@ -1,8 +1,9 @@
-// getPaid v0.4 14OCT22
+// getPaid v0.5 07NOV23
 function getPaid(tableId, colNumber) {
   // find the table with id attribute tableId
   // return the total of the numerical elements in column colNumber
   // skip the top row (th - table headers)
+  // v0.5 - add to existing paid-total amount so you can add multiple table totals
 
   var result = 0;
 
